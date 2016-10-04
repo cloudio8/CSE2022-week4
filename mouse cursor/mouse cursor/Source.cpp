@@ -12,6 +12,32 @@ const int height = 500;
 
 float* pixels = new float[width*height * 3];
 
+void drawLine(const int& i0, const int& j0, const int& i1, const int& j1, const float& red, const float& green, const float& blue);
+void drawcircle(const int&i0, const int& j0, int r);
+
+class Line
+{
+public:
+	int start_x, start_y, end_x, end_y;
+	void draw()
+	{
+		drawLine(start_x, start_y, end_x, end_y, 0.0f, 0.5f, 1.0f);
+	}
+};
+
+class Circle 
+{
+public:
+	int x_c, y_c, r;
+	void draw()
+	{
+		drawcircle(x_c, y_c, r);
+	}
+};
+const int num_lines = 5;
+Line *my_lines = new Line[num_lines];
+
+
 double pos_x, pos_y;
 GLFWwindow* window;
 
@@ -72,15 +98,22 @@ void drawcircle(const int&i0, const int& j0, int r)
 
 void drawLine(const int& i0, const int& j0, const int& i1, const int& j1, const float& red, const float& green, const float& blue)
 {
-	for (int i = i0; i <= i1; i++)
+	if (i0 == i1) 
+	{
+		for (int y = j0; y < j1; y++) 
+		{
+			drawPixel(i0, y, 1.0f, 0.0f, 0.0f);
+		}
+	}
+
+	else for (int i = i0; i <= i1; i++)
 	{
 		const int j = (j1 - j0)*(i - i0) / (i1 - i0) + j0;
 
 		drawPixel(i, j, red, green, blue);
 	}
+	
 }
-
-
 void drawOnPixelBuffer()
 {
 	//std::memset(pixels, 1.0f, sizeof(float)*width*height * 3); // doesn't work
@@ -91,11 +124,6 @@ void drawOnPixelBuffer()
 													//	pixels[i * 3 + 1] = 1.0f; // green
 													//	pixels[i * 3 + 2] = 1.0f; // blue
 													//}
-
-	const int i = rand() % width, j = rand() % height;
-	//drawPixel(i, j, 0.0f, 0.0f, 0.0f);
-
-	
 
 }
 
@@ -124,51 +152,48 @@ int main(void)
 
 		int i1 = 80, i2 = 210, i3 = 340, i4 = 470, i5 = 600, j1 = 100, j2 = 400;
 		int r = 50;
+		for (int y = 0; y < 2; y++)
+			for (int x = 0; x < 5; x++)
+			{
+				drawcircle(80 + 130 * x, 100 + 300 * y, r);
+			}
+
+		/*for (int i = 0; i < 5; i++)
+		{
+			my_lines[i].start_x = 0 + 50 * i;
+			my_lines[i].start_y = 0;
+			my_lines[i].end_x = 50 + 50 * i;
+			my_lines[i].end_y = 50;
+
+			my_lines[i].draw();
+		}*/
 
 		//circle-1
-		drawcircle(i1, j2, r);
-
 		drawLine(i1 - 30, j2 - 30, i1 + 30, j2 + 30, 1.0f, 0.0f, 0.0f);
 		drawLine(i1 - 30, j2 - 31, i1 + 30, j2 + 30, 1.0f, 0.0f, 0.0f);
 		drawLine(i1 - 30, j2 - 29, i1 + 30, j2 + 30, 1.0f, 0.0f, 0.0f);
 
 		//circle-2
-		drawcircle(i2, j2, r);
-
 		drawcircle(i2, j2, r - 30);
-		drawcircle(i2, j2, r - 31);
-		drawcircle(i2, j2, r - 32);
 		//circle-3
-		drawcircle(i3, j2, r);
+		drawLine(i3 - 27, j2 - 27, i3 - 27, j2 + 27, 1.0f, 0.0f, 0.0f);
+		drawLine(i3 + 27, j2 - 27, i3 + 27, j2 + 27, 1.0f, 0.0f, 0.0f);
 
 		drawLine(i3 - 27, j2 - 27, i3 + 27, j2 - 27, 1.0f, 0.0f, 0.0f);
 		drawLine(i3 - 27, j2 + 27, i3 + 27, j2 + 27, 1.0f, 0.0f, 0.0f);
-		for (int j = j2 - 27; j < j2 + 27; j++) {
-			drawPixel(i3 - 27, j, 1.0f, 0.0f, 0.0f);
-			drawPixel(i3 + 27, j, 1.0f, 0.0f, 0.0f);
-		}
 		//circle-4
-		drawcircle(i4, j2, r);
-
 		drawLine(i4 - 30, j2 - 30, i4 + 30, j2 + 30, 1.0f, 0.0f, 0.0f);
 		drawLine(i4 - 30, j2 + 30, i4 + 30, j2 - 30, 1.0f, 0.0f, 0.0f);
 		//circle-5
-		drawcircle(i5, j2, r);
+		drawLine(i5, j2 - 25, i5, j2 + 25, 1.0f, 0.0f, 0.0f);
 
-		for (int y = j2 - 25; y < j2 + 25; y++) {
-			drawPixel(i5, y, 1.0f, 0.0f, 0.0f);
-		}
 		drawLine(i5, j2 - 25, i5 + 10, j2 - 15, 1.0f, 0.0f, 0.0f);
 		drawLine(i5 - 10, j2 - 15, i5, j2 - 25, 1.0f, 0.0f, 0.0f);
 		// circle-6
-		drawcircle(i1, j1, r);
-
 		drawLine(i1 - 25, j1, i1 + 25, j1, 1.0f, 0.0f, 0.0f);
 		drawLine(i1 + 15, j1 + 10, i1 + 25, j1, 1.0f, 0.0f, 0.0f);
 		drawLine(i1 + 15, j1 - 10, i1 + 25, j1, 1.0f, 0.0f, 0.0f);
 		//circle-7
-		drawcircle(i2, j1, r);
-
 		drawLine(i2 - 20, j1 - 20, i2, j1 + 20, 1.0f, 0.0f, 0.0f);
 		drawLine(i2 - 20, j1 - 21, i2, j1 + 19, 1.0f, 0.0f, 0.0f);
 
@@ -177,23 +202,15 @@ int main(void)
 
 		drawLine(i2 - 10, j1, i2 + 10, j1, 1.0f, 0.0f, 0.0f);
 		//circle-8
-		drawcircle(i3, j1, r);
-
-		for (int y = j1 - 30; y < j1 + 30; y++) {
-			drawPixel(i3, y, 1.0f, 0.0f, 0.0f);
-		}
+		drawLine(i3, j1 - 30, i3, j1 + 30, 1.0f, 0.0f, 0.0f);
+		drawLine(i3 - 30, j1, i3 + 30, j1, 1.0f, 0.0f, 0.0f);
 		//circle-9
-		drawcircle(i4, j1, r);
-
 		drawLine(i4 - 25, j1, i4 + 25, j1, 1.0f, 0.0f, 0.0f);
 		drawLine(i4 - 25, j1, i4 - 15, j1 + 10, 1.0f, 0.0f, 0.0f);
 		drawLine(i4 - 25, j1, i4 - 15, j1 - 10, 1.0f, 0.0f, 0.0f);
 		//circle-10
-		drawcircle(i5, j1, r);
-
-		for (int y = j1 - 25; y < j1 + 25; y++) {
-			drawPixel(i5, y, 1.0f, 0.0f, 0.0f);
-		}
+		drawLine(i5, j1 - 25, i5, j1 + 25, 1.0f, 0.0f, 0.0f);
+		
 		drawLine(i5 - 10, j1 + 15, i5, j1 + 25, 1.0f, 0.0f, 0.0f);
 		drawLine(i5, j1 + 25, i5 + 10, j1 + 15, 1.0f, 0.0f, 0.0f);
 
